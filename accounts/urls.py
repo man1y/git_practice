@@ -1,5 +1,5 @@
 """
-URL configuration for superlists project.
+URL configuration for accounts app.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -14,14 +14,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# from django.contrib import admin
-from django.urls import include, re_path, path
-from lists import views as list_views
-from lists import urls as list_urls
-from accounts import urls as accounts_urls
+from django.urls import re_path, path
+from accounts import views
 
 urlpatterns = [
-    re_path(r'^$', list_views.home_page, name='home'),
-    re_path(r'^lists/', include(list_urls)),
-    re_path(r'^accounts/', include(accounts_urls)),
+    path('send_login_email', views.send_login_email, name='send_login_email'),
+    re_path('^login$', views.login, name='login'),
 ]
