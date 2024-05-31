@@ -7,6 +7,8 @@ User=manly
 WorkingDirectory=/home/manly/sites/SITENAME/source
 ExecStart=/home/manly/sites/SITENAME/venv/bin/gunicorn \
 	--bind unix:/tmp/SITENAME.socket \
+	--access-logfile ../access.log \
+	--error-logfile ../error.log \
 	superlists.wsgi:application
 
 [Install]

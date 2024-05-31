@@ -16,6 +16,7 @@ eg, on Ubuntu:
 ## Systemd service
 * see gunicorn-systemd.template.service
 * replace SITENAME with, e.g., staging.mydomain.com
+* Systemd unit configuration relies on SMTP settings
 
 ## Folder structure:
 Assume we have a user account at /home/username
