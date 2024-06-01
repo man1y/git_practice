@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse
 from django.contrib.auth import get_user_model
 
 from lists.models import Item, List
-from lists.forms import ItemForm, ExistingListItemForm
+from lists.forms import ItemForm, ExistingListItemForm, NewListForm
 
 User = get_user_model()
 
@@ -23,16 +23,13 @@ def view_list(request: HttpRequest, list_id) -> HttpResponse:
 
     return render(request, 'list.html', {'list': list_, 'form': form})
 
-def new_list(request) -> HttpResponse:
-    form = ItemForm(data=request.POST)
+def new_list(request: HttpRequest) -> HttpResponse:
+    form = NewListForm(data=request.POST)
     if form.is_valid():
-        list_ = List()
-        list_.owner = request.user
-        list_.save()
-        form.save(for_list=list_)
+        list_ = form.save(owner=request.user)
         return redirect(list_)
-    else:
-        return render(request, 'home.html', {'form': form})
+
+    return render(request, 'home.html', {'form': form})
 
 def my_lists(request: HttpRequest, email: str) -> HttpResponse:
     owner = User.objects.get(email=email)

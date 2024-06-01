@@ -29,8 +29,8 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.get_item_input_box().send_keys(Keys.ENTER)
         item_number = num_rows + 1
 
-        # reverse relationship ordering is non-deterministic!
-        self.wait_for_row_in_list_table(f'{item_number}: {item_text}')
+        # self.wait_for_row_in_list_table(f'{item_number}: {item_text}')
+        self.wait_for_row_in_list_table(fr'(\d): {item_text}')
 
     def setUp(self) -> None:
         # Set up webdriver
@@ -50,7 +50,9 @@ class FunctionalTest(StaticLiveServerTestCase):
     def wait_for_row_in_list_table(self, row_text) -> None:
         table = self.browser.find_element(by=By.ID, value='id_list_table')
         rows = table.find_elements(by=By.TAG_NAME, value='tr')
-        self.assertIn(row_text, [row.text for row in rows])
+        # reverse relationship ordering is non-deterministic!
+        # self.assertIn(row_text, [row.text for row in rows])
+        self.assertRegex('\n'.join([row.text for row in rows]), row_text)
 
     @wait
     def wait_for(self, func):
