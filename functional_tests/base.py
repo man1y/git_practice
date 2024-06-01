@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
 import os
+from .server_tools import reset_database
 
 class FunctionalTest(StaticLiveServerTestCase):
     MAX_WAIT = 10
@@ -21,6 +22,16 @@ class FunctionalTest(StaticLiveServerTestCase):
                     time.sleep(0.5)
         return modified_func
 
+    def add_list_item(self, item_text):
+        num_rows = len(self.browser.find_elements(By.CSS_SELECTOR, '#id_list_table tr'))
+
+        self.get_item_input_box().send_keys(item_text)
+        self.get_item_input_box().send_keys(Keys.ENTER)
+        item_number = num_rows + 1
+
+        # reverse relationship ordering is non-deterministic!
+        self.wait_for_row_in_list_table(f'{item_number}: {item_text}')
+
     def setUp(self) -> None:
         # Set up webdriver
         geckodriver_path = '/snap/bin/geckodriver'
@@ -30,6 +41,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.staging_server = os.environ.get('STAGING_SERVER')
         if self.staging_server:
             self.live_server_url = 'http://' + self.staging_server
+            reset_database(self.staging_server)
 
     def tearDown(self) -> None:
         self.browser.quit()
